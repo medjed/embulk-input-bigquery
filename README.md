@@ -30,7 +30,7 @@ in:
   type: bigquery
   project: 'project-name'
   keyfile: '/home/hogehoge/bigquery-keyfile.json'
-  sql: 'SELECT price,category_id FROM [ecsite.products_<%= params["date"].strftime("%Y%m")  %>] GROUP BY category_id'
+  sql_erb: 'SELECT price,category_id FROM [ecsite.products_<%= params["date"].strftime("%Y%m")  %>] GROUP BY category_id'
   erb_params:
     date: "require 'date'; (Date.today - 1)"
   columns:
