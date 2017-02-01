@@ -4,17 +4,9 @@ This is Embulk input plugin from Bigquery.
 
 ## Installation
 
-Add this line to your application's Gemfile:
+install it yourself as:
 
-    gem 'embulk-input-bigquery'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install embulk-input-bigquery
+    $ embulk gem install embulk-input-bigquery
 
 ## Usage
 
