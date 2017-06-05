@@ -52,6 +52,9 @@ module Embulk
 				params = @task[:params]
 				option = keys_to_sym(@task[:option])
 				rows = bq.query(@task[:sql], **option)
+
+				@task[:columns] = values_to_sym(@task[:columns], 'name')
+
 				rows.each do |row|
 					columns = []
 					@task[:columns].each do |c|
@@ -74,6 +77,13 @@ module Embulk
 					ret[key.to_sym] = value
 				end
 				ret
+			end
+
+      def values_to_sym(hashs, key)
+				hashs.map do |h|
+					h[key] = h[key].to_sym
+					h
+				end
 			end
     end
   end
