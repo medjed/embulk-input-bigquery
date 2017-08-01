@@ -58,7 +58,7 @@ module Embulk
 				rows.each do |row|
 					columns = []
 					@task[:columns].each do |c|
-						val = row[c['name']]
+						val = row[c['name'].to_sym]
 						if c['eval']
 							val = eval(c['eval'], binding)
 						end
