@@ -40,6 +40,18 @@ in:
     - {name: month, type: timestamp, format: '%Y-%m', eval: 'require "time"; Time.parse(params["date"]).to_i'}
 ```
 
+### Determine columns from query results if colmuns defination is empty
+
+```
+in:
+  type: bigquery
+  project: 'project-name'
+  keyfile: '/home/hogehoge/bigquery-keyfile.json'
+  sql: 'SELECT price,category_id FROM [ecsite.products] GROUP BY category_id'
+out:
+  type: stdout
+```
+
 ## Optional Configuration
 This plugin uses the gem [`google-cloud(Google Cloud Client Library for Ruby)`](https://github.com/GoogleCloudPlatform/google-cloud-ruby) and queries data using [the synchronous method](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/google-cloud-bigquery/lib/google/cloud/bigquery/project.rb#L281).
 Therefore some optional configuration items comply with the Google Cloud Client Library.
