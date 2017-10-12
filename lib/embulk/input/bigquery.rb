@@ -30,8 +30,6 @@ module Embulk
           option: {
             max: config[:max],
             cache: config[:cache],
-            timeout: config[:timeout],
-            dryrun:  config[:dryrun],
             standard_sql: config[:standard_sql],
             legacy_sql: config[:legacy_sql]
           }
