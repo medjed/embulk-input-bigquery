@@ -77,7 +77,7 @@ module Embulk
         rows = if @task[:job_id].nil?
                  bq.query(@task[:sql], **option)
                else
-                 bq.job(@task[:job_id]).data(max: option[:max])
+                 bq.job(@task[:job_id]).query_results(max: option[:max])
                end
 
         @task[:columns] = values_to_sym(@task[:columns], 'name')
