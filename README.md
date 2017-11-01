@@ -52,6 +52,29 @@ out:
   type: stdout
 ```
 
+### Embed keyfile content as string into config
+
+```
+in:
+  type: bigquery
+  project: 'project-name'
+  keyfile:
+    content: |
+      {
+        "type": "service_account",
+        "project_id": "example-project",
+        "private_key_id": "1234567890ABCDEFG",
+        "private_key": "**************************************",
+        "client_email": "example-project@hogehoge.gserviceaccount.com",
+        "client_id": "12345678901234567890",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://accounts.google.com/o/oauth2/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/hogehoge.gcp.iam.gserviceaccount.com"
+      }
+```
+
+
 ## Optional Configuration
 This plugin uses the gem [`google-cloud(Google Cloud Client Library for Ruby)`](https://github.com/GoogleCloudPlatform/google-cloud-ruby) and queries data using [the synchronous method](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/google-cloud-bigquery/lib/google/cloud/bigquery/project.rb#L281).
 Therefore some optional configuration items comply with the Google Cloud Client Library.

@@ -7,6 +7,20 @@ module Embulk
     class InputBigquery < InputPlugin
       Plugin.register_input('bigquery', self)
 
+      # support config by file path or content which supported by org.embulk.spi.unit.LocalFile
+      # keyfile:
+      #   content: |
+      class LocalFile
+        # return JSON string
+        def self.load(v)
+          if v.is_a?(String)
+            v
+          elsif v.is_a?(Hash)
+            JSON.parse(v['content'])
+          end
+        end
+      end
+
       def self.transaction(config, &control)
         sql = config[:sql]
         params = {}
@@ -23,7 +37,7 @@ module Embulk
 
         task = {
           project: config[:project],
-          keyfile: config[:keyfile],
+          keyfile: config.param(:keyfile, LocalFile, nil),
           sql: sql,
           params: params,
           option: {
@@ -37,7 +51,7 @@ module Embulk
         if config[:columns]
           task[:columns] = config[:columns]
         else
-          bq = Google::Cloud::Bigquery.new(project: config[:project], keyfile: config[:keyfile])
+          bq = Google::Cloud::Bigquery.new(project: task[:project], keyfile: task[:keyfile])
           task[:job_id], task[:columns] = determine_columns_by_query_results(sql, task[:option], bq)
         end
 
