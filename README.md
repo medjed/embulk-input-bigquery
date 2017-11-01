@@ -40,7 +40,7 @@ in:
     - {name: month, type: timestamp, format: '%Y-%m', eval: 'require "time"; Time.parse(params["date"]).to_i'}
 ```
 
-### Determine columns from query results if colmuns defination is empty
+### Determine columns from query results if columns definition is empty
 
 ```
 in:
