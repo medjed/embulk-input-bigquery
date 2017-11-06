@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['naritano77@gmail.com']
   spec.description   = 'embulk input plugin from bigquery.'
   spec.summary       = 'Embulk input plugin from bigquery.'
-  spec.homepage      = ''
+  spec.homepage      = 'https://github.com/narita-takeru/embulk-input-bigquery'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR)
