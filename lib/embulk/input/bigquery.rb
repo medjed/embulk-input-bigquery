@@ -82,7 +82,7 @@ module Embulk
 
         @task[:columns] = values_to_sym(@task[:columns], 'name')
 
-        rows.each do |row|
+        rows.all do |row|
           columns = []
           @task[:columns].each do |c|
             val = row[c['name'].to_sym]
