@@ -8,7 +8,22 @@ install it yourself as:
 
     $ embulk gem install embulk-input-bigquery
 
-## Usage
+# Configuration
+
+## Options
+
+### Query Options
+
+This plugin uses the gem [`google-cloud(Google Cloud Client Library for Ruby)`](https://github.com/GoogleCloudPlatform/google-cloud-ruby) and queries data using [the synchronous method](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/c26b404d06f39d0c0c868e553255fb8f530c07b5/google-cloud-bigquery/lib/google/cloud/bigquery/project.rb#L506). Optional configuration items comply with the Google Cloud Client Library.
+
+| name                                 | type        | required?  | default                  | description            |
+|:-------------------------------------|:------------|:-----------|:-------------------------|:-----------------------|
+| max                                  | integer     | optional   | `null`                   | The maximum number of rows of data to return per page of results. Setting this flag to a small value such as 1000 and then paging through results might improve reliability when the query result set is large. In addition to this limit, responses are also limited to 10 MB. By default, there is no maximum row count, and only the byte limit applies. |
+| cache                                | boolean     | optional   | true                     | Whether to look for the result in the query cache. The query cache is a best-effort cache that will be flushed whenever tables in the query are modified. The default value is true. For more information, see [query caching](https://developers.google.com/bigquery/querying-data). |
+| standard\_sql                        | boolean     | optional   | true                     | Specifies whether to use BigQuery's [standard SQL](https://cloud.google.com/bigquery/docs/reference/standard-sql/) dialect for this query. If set to true, the query will use standard SQL rather than the [legacy SQL](https://cloud.google.com/bigquery/docs/reference/legacy-sql) dialect. When set to true, the values of `large_results` and `flatten` are ignored; the query will be run as if `large_results` is true and `flatten` is false. Optional. The default value is true. |
+| legacy\_sql                          | boolean     | optional   | false                    | legacy_sql Specifies whether to use BigQuery's [legacy SQL](https://cloud.google.com/bigquery/docs/reference/legacy-sql) dialect for this query. If set to false, the query will use BigQuery's [standard SQL](https://cloud.google.com/bigquery/docs/reference/standard-sql/) When set to false, the values of `large_results` and `flatten` are ignored; the query will be run as if `large_results` is true and `flatten` is false. Optional. The default value is false. |
+
+## Example
 
 ```
 in:
@@ -24,7 +39,7 @@ out:
   type: stdout
 ```
 
-If, table name is changeable, then
+If the table name is changeable, then
 
 ```
 in:
@@ -40,24 +55,25 @@ in:
     - {name: month, type: timestamp, format: '%Y-%m', eval: 'require "time"; Time.parse(params["date"]).to_i'}
 ```
 
-### Determine columns from query results if columns definition is empty
+## Authentication
+
+### JSON key of GCP's service account
+
+You first need to create a service account (client ID), download its json key and deploy the key with embulk.
 
 ```
 in:
   type: bigquery
-  project: 'project-name'
-  keyfile: '/home/hogehoge/bigquery-keyfile.json'
-  sql: 'SELECT price,category_id FROM [ecsite.products] GROUP BY category_id'
-out:
-  type: stdout
+  project: project_name
+  keyfile: /path/to/keyfile.json
 ```
 
-### Embed keyfile content as string into config
+You can also embed contents of json_keyfile at config.yml.
 
 ```
 in:
   type: bigquery
-  project: 'project-name'
+  project: project_name
   keyfile:
     content: |
       {
@@ -74,16 +90,44 @@ in:
       }
 ```
 
+## Automatically determine column schema from query results
 
-## Optional Configuration
-This plugin uses the gem [`google-cloud(Google Cloud Client Library for Ruby)`](https://github.com/GoogleCloudPlatform/google-cloud-ruby) and queries data using [the synchronous method](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/google-cloud-bigquery/lib/google/cloud/bigquery/project.rb#L281).
-Therefore some optional configuration items comply with the Google Cloud Client Library.
+Column schema can be automatically determined from query results if `columns` definition is not given.
+Please note that we have to wait until BigQuery query job complets to get the schema information.
 
-- [max](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/google-cloud-bigquery/lib/google/cloud/bigquery/project.rb#L315) :
-  - default value : **null** and null value is interpreted as [no maximum row count](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/google-cloud-bigquery/lib/google/cloud/bigquery/project.rb#L319) in the Google Cloud Client Library.
-- [cache](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/google-cloud-bigquery/lib/google/cloud/bigquery/project.rb#L331) :
-  - default value : **null** and null value is interpreted as [true](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/google-cloud-bigquery/lib/google/cloud/bigquery/project.rb#L333) in the Google Cloud Client Library.
-- [standard_sql](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/google-cloud-bigquery/lib/google/cloud/bigquery/project.rb#L343):
-  - default value : **null** and null value is interpreted as [true](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/google-cloud-bigquery/lib/google/cloud/bigquery/project.rb#L351) in the Google Cloud Client Library.
-- [legacy_sql](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/google-cloud-bigquery/lib/google/cloud/bigquery/project.rb#L353):
-  - default value : **null** and null value is interpreted as [false](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/google-cloud-bigquery/lib/google/cloud/bigquery/project.rb#L361) in the Google Cloud Client Library.
+```
+in:
+  type: bigquery
+  project: project_name
+  keyfile: /path/to/keyfile.json
+  sql: 'SELECT price,category_id FROM [ecsite.products] GROUP BY category_id'
+out:
+  type: stdout
+```
+
+# Another Choice
+
+`embulk-input-bigquery` queries to BigQuery, so it costs. To save money, you may take following procedures instead:
+
+1. [Export data](https://cloud.google.com/bigquery/docs/exporting-data?hl=en) from BigQuery to GCS with avro format
+2. Use [embulk-input-gcs](https://github.com/embulk/embulk-input-gcs) and [embulk-parser-avro](https://github.com/joker1007/embulk-parser-avro) to read the exported data from GCS.
+
+# Development
+
+## Run
+```
+embulk bundle install --path vendor/bundle
+embulk run -X page_size=1 -b . -l trace example/example.yml
+```
+
+## Release gem
+
+Upgrade `lib/embulk/input/bigquery/version.rb`, then
+
+```
+$ bundle exec rake release
+```
+
+# ChangeLog
+
+[CHANGELOG.md](./CHANGELOG.md)
