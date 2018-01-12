@@ -85,7 +85,7 @@ module Embulk
         rows.all do |row|
           columns = []
           @task[:columns].each do |c|
-            val = row[c['name'].to_sym]
+            val = row[c['name'].to_sym] || row[c['name'].to_s]
             val = eval(c['eval'], binding) if c['eval']
 
             columns << as_serializable(val)
