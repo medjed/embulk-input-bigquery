@@ -1,3 +1,7 @@
+# 0.0.4 (2018/01/14)
+
+* Unsupport google-cloud-bigquery v0.23 (#23)
+
 # 0.0.3 (2017/12/11)
 
 * Add BigQuery query option configurations (#4)
