@@ -11,7 +11,6 @@ module Embulk
       # keyfile:
       #   content: |
       class LocalFile
-        # return JSON string
         def self.load(v)
           if v.is_a?(String)
             v
@@ -27,7 +26,7 @@ module Embulk
         unless sql
           sql_erb = config[:sql_erb]
           erb = ERB.new(sql_erb)
-          erb_params = config[:erb_params]
+          erb_params = config[:erb_params] || {}
           erb_params.each do |k, v|
             params[k] = eval(v)
           end
