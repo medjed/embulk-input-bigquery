@@ -1,3 +1,7 @@
+# 0.0.5 (2018/05/14)
+
+* Allow google-cloud-bigquery version between v0.24 and v1.5.0
+
 # 0.0.4 (2018/01/14)
 
 * Unsupport google-cloud-bigquery v0.23 (#23)
