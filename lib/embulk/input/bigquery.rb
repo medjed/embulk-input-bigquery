@@ -43,7 +43,8 @@ module Embulk
             max: config[:max],
             cache: config[:cache],
             standard_sql: config[:standard_sql],
-            legacy_sql: config[:legacy_sql]
+            legacy_sql: config[:legacy_sql],
+            location: config[:location],
           }
         }
 
@@ -74,9 +75,17 @@ module Embulk
         option = keys_to_sym(@task[:option])
 
         rows = if @task[:job_id].nil?
-                 bq.query(@task[:sql], **option)
+                 query_option = option.dup
+                 query_option.delete(:location)
+
+                 bq.query(@task[:sql], **query_option) do |job_updater|
+                   job_updater.location = option[:location] if option[:location]
+                 end
                else
-                 bq.job(@task[:job_id]).query_results(max: option[:max])
+                 job_option = {}
+                 job_option[:location] = option[:location] if option[:location]
+
+                 bq.job(@task[:job_id], **job_option).query_results(max: option[:max])
                end
 
         @task[:columns] = values_to_sym(@task[:columns], 'name')
@@ -99,9 +108,12 @@ module Embulk
       def self.determine_columns_by_query_results(sql, option, bigquery_client)
         Embulk.logger.info 'determine columns using the getQueryResults API instead of the config.yml'
 
-        filtered_option = option.dup
-        filtered_option.delete(:max)
-        job = bigquery_client.query_job(sql, **filtered_option)
+        query_option = option.dup
+        query_option.delete(:max)
+        query_option.delete(:location)
+        job = bigquery_client.query_job(sql, **query_option) do |query|
+          query.location = option[:location] if option[:location]
+        end
 
         Embulk.logger.info 'waiting for the query job to complete to get schema from query results'
         job.wait_until_done!
