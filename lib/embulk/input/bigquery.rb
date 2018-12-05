@@ -45,6 +45,7 @@ module Embulk
             standard_sql: config[:standard_sql],
             legacy_sql: config[:legacy_sql],
             location: config[:location],
+            large_results: config[:large_results],
           }
         }
 
