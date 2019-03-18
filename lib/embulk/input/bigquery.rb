@@ -25,13 +25,18 @@ module Embulk
         params = {}
         unless sql
           sql_erb = config[:sql_erb]
-          erb = ERB.new(sql_erb)
-          erb_params = config[:erb_params] || {}
-          erb_params.each do |k, v|
-            params[k] = eval(v)
-          end
+          if sql_erb
+            erb = ERB.new(sql_erb)
+            erb_params = config[:erb_params] || {}
+            erb_params.each do |k, v|
+              params[k] = eval(v)
+            end
 
-          sql = erb.result(binding)
+            sql = erb.result(binding)
+          else
+            sql_file = config[:sql_file]
+            sql = File.open(sql_file) { |f| f.read }
+          end
         end
 
         task = {

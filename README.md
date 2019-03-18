@@ -50,13 +50,23 @@ in:
   type: bigquery
   project: 'project-name'
   keyfile: '/home/hogehoge/bigquery-keyfile.json'
-  sql_erb: 'SELECT price,category_id FROM [ecsite.products_<%= params["date"].strftime("%Y%m")  %>] GROUP BY category_id'
+  sql_erb: 'select price,category_id from [ecsite.products_<%= params["date"].strftime("%y%m")  %>] group by category_id'
   erb_params:
-    date: "require 'date'; (Date.today - 1)"
+    date: "require 'date'; (date.today - 1)"
   columns:
     - {name: price, type: long}
     - {name: category_id, type: long}
-    - {name: month, type: timestamp, format: '%Y-%m', eval: 'require "time"; Time.parse(params["date"]).to_i'}
+    - {name: month, type: timestamp, format: '%y-%m', eval: 'require "time"; time.parse(params["date"]).to_i'}
+```
+
+If using SQL statement in the file, then
+
+```
+in:
+  type: bigquery
+  project: 'project-name'
+  keyfile: '/home/hogehoge/bigquery-keyfile.json'
+  sql_file: '/path/to/sql_file.sql'
 ```
 
 ## Authentication
