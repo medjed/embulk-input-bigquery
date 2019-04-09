@@ -1,3 +1,7 @@
+# 0.0.7 (2019/04/09)
+
+* Allow google-cloud-bigquery version between v0.24 and v1.12
+
 # 0.0.6 (2018/05/16)
 
 * Support location option to allow to use location other than the US or EU multi-region.
