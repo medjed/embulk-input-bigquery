@@ -1,3 +1,8 @@
+# 0.0.8 (2019/10/17)
+
+* Depend signet from '~> 0.7' to '< 0.12`
+* Depend google-api-client to '< 0.33'
+
 # 0.0.7 (2019/04/09)
 
 * Allow google-cloud-bigquery version between v0.24 and v1.12
