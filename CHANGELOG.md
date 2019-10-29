@@ -1,3 +1,8 @@
+# 0.0.9 (2019/10/30)
+
+* Depend google-cloud-env to '< 1.3.0` (thanks to @noissefnoc)
+* Depend google-cloud-core to '< 1.4.0' (thanks to @noissefnoc)
+
 # 0.0.8 (2019/10/17)
 
 * Depend signet from '~> 0.7' to '< 0.12`
