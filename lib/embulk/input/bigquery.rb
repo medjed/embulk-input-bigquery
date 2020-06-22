@@ -20,6 +20,11 @@ module Embulk
         end
       end
 
+      def self.bigquery_client_factory(config)
+        bq_opts = {project: config.fetch(:project), keyfile: config.fetch(:keyfile)}.merge(task.fetch(:bigquery_opts, {}))
+        Google::Cloud::Bigquery.new(**bq_opts)
+      end
+
       def self.transaction(config, &control)
         sql = config[:sql]
         params = {}
@@ -45,13 +50,14 @@ module Embulk
             standard_sql: config[:standard_sql],
             legacy_sql: config[:legacy_sql],
             location: config[:location],
-          }
+          },
+          bigquery_opts: config.fetch(:bigquery_opts, {})
         }
 
         if config[:columns]
           task[:columns] = config[:columns]
         else
-          bq = Google::Cloud::Bigquery.new(project: task[:project], keyfile: task[:keyfile])
+          bq = bigquery_client_factory(task)
           task[:job_id], task[:columns] = determine_columns_by_query_results(sql, task[:option], bq)
         end
 
@@ -70,7 +76,7 @@ module Embulk
       end
 
       def run
-        bq = Google::Cloud::Bigquery.new(project: task[:project], keyfile: task[:keyfile])
+        bq = self.class.bigquery_client_factory(@task)
         params = @task[:params]
         option = keys_to_sym(@task[:option])
 
