@@ -51,7 +51,7 @@ module Embulk
         if config[:columns]
           task[:columns] = config[:columns]
         else
-          bq = Google::Cloud::Bigquery.new(project: task[:project], keyfile: task[:keyfile])
+          bq = Google::Cloud::Bigquery.new(project: task[:project], keyfile: task[:keyfile], timeout: 1800)
           task[:job_id], task[:columns] = determine_columns_by_query_results(sql, task[:option], bq)
         end
 
@@ -70,7 +70,7 @@ module Embulk
       end
 
       def run
-        bq = Google::Cloud::Bigquery.new(project: task[:project], keyfile: task[:keyfile])
+        bq = Google::Cloud::Bigquery.new(project: task[:project], keyfile: task[:keyfile], timeout: 1800)
         params = @task[:params]
         option = keys_to_sym(@task[:option])
 
