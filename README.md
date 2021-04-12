@@ -36,6 +36,7 @@ in:
     - {name: price, type: long}
     - {name: category_id, type: string}
   max: 2000
+  labels: {hoge: fuga}
 
   # # If your data is in a location other than the US or EU multi-region, you must specify the location.
   # location: asia-northeast1
@@ -135,3 +136,30 @@ $ bundle exec rake release
 # ChangeLog
 
 [CHANGELOG.md](./CHANGELOG.md)
+
+## ローカル開発
+
+### 環境準備
+
+```bash
+git clone https://github.com/rinoguchi/embulk-input-bigquery.git
+cd embulk-input-bigquery
+mkdir example
+vi example/example.yml # 何か適当に作る
+embulk bundle install --path vendor/bundle
+```
+
+### 実行
+
+```bash
+embulk run -X page_size=1 -b . -l trace example/example.yml
+```
+
+### デプロイ
+
+```bash
+rbenv global 2.5.9
+gem install bundler
+bundle install
+embulk bundle exec rake build # gemファイルが作成される
+```

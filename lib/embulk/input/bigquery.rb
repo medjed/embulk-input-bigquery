@@ -45,6 +45,7 @@ module Embulk
             standard_sql: config[:standard_sql],
             legacy_sql: config[:legacy_sql],
             location: config[:location],
+            labels: config[:labels],
           }
         }
 
@@ -77,9 +78,11 @@ module Embulk
         rows = if @task[:job_id].nil?
                  query_option = option.dup
                  query_option.delete(:location)
+                 query_option.delete(:labels)
 
                  bq.query(@task[:sql], **query_option) do |job_updater|
                    job_updater.location = option[:location] if option[:location]
+                   job_updater.labels = option[:labels] if option[:labels]
                  end
                else
                  job_option = {}
