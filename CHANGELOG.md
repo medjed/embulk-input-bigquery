@@ -1,3 +1,7 @@
+# 0.0.9.1
+
+* Add labels option
+
 # 0.0.9 (2019/10/30)
 
 * Depend google-cloud-env to '< 1.3.0` (thanks to @noissefnoc)

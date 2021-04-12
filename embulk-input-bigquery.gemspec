@@ -29,6 +29,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'google-cloud-env','< 1.3.0'
   spec.add_dependency 'google-cloud-core','< 1.4.0'
   spec.add_dependency 'google-cloud-bigquery', ['>= 1.2', '< 1.12']
+  spec.add_dependency 'representable', '< 3.0.4'
   spec.add_development_dependency 'bundler', '>= 1.3'
   spec.add_development_dependency 'rake'
 end
