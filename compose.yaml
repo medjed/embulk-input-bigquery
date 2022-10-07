@@ -1,0 +1,9 @@
+version: "3"
+services:
+  embulk:
+    platform: linux/amd64
+    build:
+      context: .
+    volumes:
+      - .:/embulk
+    working_dir: /embulk

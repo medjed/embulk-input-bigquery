@@ -1,0 +1,7 @@
+in:
+  type: bigquery
+  project: foo
+  keyfile: /embulk/example/keyfile.json
+  sql: "select 1"
+out:
+  type: stdout
