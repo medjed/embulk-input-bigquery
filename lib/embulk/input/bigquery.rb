@@ -39,6 +39,8 @@ module Embulk
           keyfile: config.param(:keyfile, LocalFile, nil),
           sql: sql,
           params: params,
+          retries: config[:retries],
+          timeout: config[:timeout],
           option: {
             max: config[:max],
             cache: config[:cache],
@@ -51,7 +53,7 @@ module Embulk
         if config[:columns]
           task[:columns] = config[:columns]
         else
-          bq = Google::Cloud::Bigquery.new(project: task[:project], keyfile: task[:keyfile])
+          bq = Google::Cloud::Bigquery.new(project: task[:project], keyfile: task[:keyfile], retries: task[:retries], timeout: task[:timeout])
           task[:job_id], task[:columns] = determine_columns_by_query_results(sql, task[:option], bq)
         end
 
@@ -70,7 +72,7 @@ module Embulk
       end
 
       def run
-        bq = Google::Cloud::Bigquery.new(project: task[:project], keyfile: task[:keyfile])
+        bq = Google::Cloud::Bigquery.new(project: task[:project], keyfile: task[:keyfile], retries: task[:retries], timeout: task[:timeout])
         params = @task[:params]
         option = keys_to_sym(@task[:option])
 
