@@ -1,3 +1,7 @@
+# 0.1.0 (2022/10/08)
+
+* Allow Google::Cloud::Bigquery.new to be initialised with retries & timeout options (thanks to @calorie)
+
 # 0.0.9 (2019/10/30)
 
 * Depend google-cloud-env to '< 1.3.0` (thanks to @noissefnoc)
